@@ -1,4 +1,5 @@
 import requests
+import datetime
 
 
 def get_weather_data():
@@ -18,10 +19,8 @@ global weather_data, temp, humidity
 weather_data = get_weather_data()
 temp = weather_data['main']['temp'] - 273.15
 humidity = weather_data['main']['humidity']
+condClima = weather_data['weather'][0]['main']
+nascerSol = weather_data['sys']['sunrise']
+morrerSol = weather_data['sys']['sunset']
 
-print("{:<18} {:<18}".format("Temperatura", temp))
-print("{:<18} {:<18}".format("Umidade", humidity))
-
-# Definicao de variavies
-tempAcima30 = temp >= 30
-print(tempAcima30)
+print(condClima)
