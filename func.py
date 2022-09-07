@@ -28,3 +28,11 @@ def temperatura20_30(temp):
 
 def tempChuva(clima):
     return (clima == 'Rain' or clima == 'Thunderstorm' or clima == 'Drizzle' or clima == 'Snow')
+
+
+def UmidadeSoloAcima60(UmidadeSolo):
+    return UmidadeSolo >= 60
+
+
+def UmidadeSoloAbaixo60(UmidadeSolo):
+    return UmidadeSolo < 60

@@ -106,6 +106,7 @@ engine.declare(Fact(TemperaturaAcima30=func.temperaturaAcima30(temp),
                     ))
 
 # Altura da planta
+
 # Quantidade de sol diaria (em horas)
 
 engine.run()

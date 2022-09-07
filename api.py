@@ -23,4 +23,4 @@ condClima = weather_data['weather'][0]['main']
 nascerSol = weather_data['sys']['sunrise']
 morrerSol = weather_data['sys']['sunset']
 
-print(condClima)
+# print(condClima)
