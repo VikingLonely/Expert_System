@@ -1,3 +1,7 @@
+
+import regras
+
+
 def temperaturaAcima30(temp):
     return temp >= 30
 
@@ -36,3 +40,11 @@ def UmidadeSoloAcima60(UmidadeSolo):
 
 def UmidadeSoloAbaixo60(UmidadeSolo):
     return UmidadeSolo < 60
+
+
+aux = regras
+
+
+def VerificarIrrigaçãoNormal():
+    if(aux.IrrigacaoNormalFinal == True):
+        print("oi")
