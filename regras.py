@@ -1,7 +1,9 @@
 
+from unittest import result
 from experta import *
 import func
 import api
+import interface
 
 temp = api.temp
 umidadeAr = api.humidity
@@ -9,6 +11,7 @@ condClima = api.condClima
 
 
 class InferenceEngine(KnowledgeEngine):
+
     # Regra 1
     # Se chover não irrigar
     @Rule(Fact(TempChuva=True), Fact(UmidadeAr=True))
@@ -40,14 +43,13 @@ class InferenceEngine(KnowledgeEngine):
     # Regra 5
     # se a temperatura estiver entre 20° e 30° e a umidade do ar estiver abaixo de 50 % então irrigue de 2 em 2 horas
     @Rule(Fact(Temperatura20_30=True), Fact(UmidadeArAbaixo50=True), Fact(TempChuva=False))
-    def TempoSeco(self):
+    def TempoIdeal(self):
         self.declare(Fact(IrrigacaoNormal=True))
-        print("test")
 
     # Regra 6
     # se a temperatura estiver entre 20° e 30° e a umidade do ar estiver acima de 50 % então irrigue de 4 em 4 horas
     @Rule(Fact(Temperatura20_30=True), Fact(UmidadeAr=True), Fact(TempChuva=False))
-    def TempoSeco1(self):
+    def TempoIdeal1(self):
         self.declare(Fact(IrrigacaoBaixa=True))
         print("Temperatura ideal - irrigar com frequencia diminuida")
 
@@ -109,16 +111,24 @@ engine.reset()
 
 engine.declare(Fact(TemperaturaAcima30=func.temperaturaAcima30(temp),
                     Temperatura20_30=func.temperatura20_30(temp),
+                    Temperatura10_20=func.temperatura10_20(temp),
+                    TemperaturaMinima=func.temperaturaMinima(temp),
                     UmidadeArAbaixo50=func.umidadeArAbaixo50(umidadeAr),
                     UmidadeArAbaixo30=func.umidadeArAbaixo30(umidadeAr),
                     UmidadeAr=func.umidadeAr50(umidadeAr),
-                    TemperaturaMinima=func.temperaturaMinima(temp),
                     TempChuva=func.tempChuva(condClima),
-                    UmidadeSoloAcima60=True,
-                    UmidadeSoloAbaixo60=False,
-                    PlantaAcima6=False
+                    UmidadeSoloAcima60=func.UmidadeSoloAcima60(interface.aux),
+                    UmidadeSoloAbaixo60=func.UmidadeSoloAbaixo60(
+                        interface.aux),
+                    PlantaAcima6=interface.aux2
                     ))
 
+print(func.temperaturaAcima30(temp), func.temperatura20_30(temp), func.umidadeArAbaixo50(umidadeAr),
+      func.umidadeArAbaixo30(umidadeAr), func.umidadeAr50(umidadeAr),
+      func.temperaturaMinima(temp), func.tempChuva(
+          condClima), func.UmidadeSoloAcima60(interface.aux),
+      func.UmidadeSoloAbaixo60(
+    interface.aux), interface.aux2)
 # Altura da planta
 # Quantidade de sol diaria (em horas)
 engine.run()
