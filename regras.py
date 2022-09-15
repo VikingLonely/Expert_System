@@ -79,9 +79,7 @@ class InferenceEngine(KnowledgeEngine):
     # se a temperatura estiver entre 10° e 20° e umidade do ar acima de 50% então não irrigue.
     @ Rule(Fact(Temperatura10_20=True), Fact(UmidadeAr=True), Fact(TempChuva=False))
     def Manha(self):
-        self.declare(Fact(IrrigacaoManha=False))
-        global retorno
-        retorno = 'Temperatura Baixa - Não irá ligar irrigação'
+        self.declare(Fact(IrrigacaoBaixa=True))
 
     # Regra 10
     # se a regra 5 for verdadeira verificar a condição do solo
@@ -120,6 +118,20 @@ class InferenceEngine(KnowledgeEngine):
         self.declare(Fact(IrrigacaoMetade=True))
         global retornoP
         retornoP = ("Planta no estagio final - irrigar com metade do volume")
+
+    @Rule(Fact(IrrigacaoBaixa=True), Fact(UmidadeSoloAbaixo60=True))
+    def SoloSecoBaixa(self):
+        self.declare(Fact(IrrigacaoBaixaFinal=True))
+        global retorno
+        retorno = (
+            'Solo seco/Temperatura Baixa - liguar a irrigaçao com menor frequencia')
+
+    @Rule(Fact(IrrigacaoBaixa=True), Fact(UmidadeSoloAcima60=True))
+    def SoloUmidoBaixa(self):
+        self.declare(Fact(IrrigacaoBaixaFinal=False))
+        global retorno
+        retorno = (
+            'Solo Umido/Temperatura Baixa - Não irá ligar a irrigação')
 
 
 engine = InferenceEngine()
