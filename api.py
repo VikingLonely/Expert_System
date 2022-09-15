@@ -21,6 +21,7 @@ humidity = weather_data['main']['humidity']
 condClima = weather_data['weather'][0]['main']
 nascerSol = weather_data['sys']['sunrise']
 morrerSol = weather_data['sys']['sunset']
+print('teste')
 
 # print(weather_data)
 print(temp, humidity, condClima, nascerSol, morrerSol)
