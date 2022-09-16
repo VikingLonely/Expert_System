@@ -1,16 +1,15 @@
-from email.mime import image
-from turtle import color
+
 from PySimpleGUI import PySimpleGUI as sg
 from experta import *
 import func
 import api
 from regras import *
 
-image = 'D:/Usuário/Documents/Faculdade/IA/TrabalhoFinal/images/Blooming-bro.png'
 temp = api.temp
 umidadeAr = api.humidity
 condClima = api.condClima
 
+# Cria um tema para a interface
 sg.LOOK_AND_FEEL_TABLE['MyCreatedTheme'] = {'BACKGROUND': 'light blue',
                                             'TEXT': 'black',
                                             'INPUT': 'white',
@@ -21,13 +20,25 @@ sg.LOOK_AND_FEEL_TABLE['MyCreatedTheme'] = {'BACKGROUND': 'light blue',
                                             'BORDER': 1, 'SLIDER_DEPTH': 0,
                                             'PROGRESS_DEPTH': 0, }
 
-layout_img = [
+# Criaçao do layout da img da tela principal e de resposta
+layout_imgMain = [
     [sg.Image(filename='Blooming-bro.png', background_color='light blue')]]
 
-layout_title = [
+layout_imgR = [
+    [sg.Image(filename='Water_drop-bro.png', background_color='light blue')]
+]
+
+# criaçao do layout do titulo da tela principal e de resposta
+layout_titleMain = [
     [sg.Push(background_color='light blue'), sg.Frame('', [[sg.Text('Irrigação - Lupulo', font=('Times new Roman', 16), background_color='light blue', text_color='black')]], background_color='LightBlue3'), sg.Push(background_color='light blue')]]
 
-layout_umidade = [
+layout_titleR = [
+    [sg.Push(background_color='light blue'), sg.Frame('', [[sg.Text('Expert System', font=('Times new Roman', 16),
+                                                                    background_color='light blue', text_color='black')]], background_color='LightBlue3'), sg.Push(background_color='light blue')]
+]
+
+# Criaçao dos campos de variaveis da tela principal
+layout_variaveis = [
     [sg.Frame('', [[sg.Text('Umidade do Solo: ', font=('Times new Roman', 12), background_color='LightBlue3', text_color='black')],
                    [sg.Input(key='umidadeSolo', size=(23, 1))]], background_color='LightBlue3')],
     [sg.Text(background_color='light blue')],
@@ -41,36 +52,58 @@ layout_umidade = [
 
 ]
 
+# criaçao dos campos onde vão ser apresntados as respostas
+layout_Resp = [
+    [sg.Text(background_color='light blue')],
+    [sg.Frame('', [[sg.Text('Resposta:', font=('Times new Roman', 12), background_color='LightBlue3', text_color='black')],
+                   [sg.Text('', key='resul1', background_color='white', size=(35, 3), text_color='black')]], background_color='LightBlue3')],
+    [sg.Text(background_color='light blue')],
+    [sg.Frame('', [[sg.Text('Obs:', font=('Times new Roman', 12),
+              background_color='LightBlue3', text_color='black')],
+                   [sg.Text('', key='resul2', background_color='white', size=(35, 3), text_color='black')]], background_color='LightBlue3')],
+    [sg.Text(size=(0, 2), background_color='light blue')],
+    [sg.Push(background_color='light blue'),
+     sg.Button('Finalizar')]
+]
+
+# organizaçao do janela Main
+
 
 def janela_main():
     sg.theme('MyCreatedTheme')
     layout = [
-        [layout_title],
-        [sg.Column(layout_img),
-         sg.Column(layout_umidade)]
+        [layout_titleMain],
+        [sg.Column(layout_imgMain),
+         sg.Column(layout_variaveis)]
     ]
     return sg.Window('Main', layout=layout, finalize=True)
 
+# Organizaçao  da janela de resposta
+
 
 def janela_resul():
-    sg.theme('TealMono')
+    sg.theme('MyCreatedTheme')
     layout = [
-        [sg.Text('Resposta Expert System')],
-        [sg.Text('', key='resul1')],
-        [sg.Text('', key='resul2')],
-        [sg.Push(), sg.Push(), sg.Button('Finalizar')]
+        [layout_titleR],
+        [sg.Column(layout_imgR),
+         sg.Column(layout_Resp)]
     ]
-    return sg.Window('Expert System', size=(600, 400), layout=layout, finalize=True)
+    return sg.Window('Expert System', layout=layout, finalize=True)
 
 
+# inicialização da tela principal
 janela1, janela2 = janela_main(), None
 
-
+# logica da interface
 while True:
+    # funcão que le tudo que acontece nas janelas
     window, event, values = sg.read_all_windows()
 
+    # condiçao inicial de parada
     if window == janela1 and event == sg.WIN_CLOSED:
         break
+
+    # funcão que irá coletar os valores das variaveis e iniciar as regras para buscar uma resposta
     if window == janela1 and event == 'Verificar Irrigação':
         aux = values['umidadeSolo']
         if(values['plantaMaior'] == True):
@@ -96,15 +129,18 @@ while True:
         engine.run()
         resultado = ret()
         resultadoP = retP()
-        janela2['resul1'].update(f'{resultado}')
+        janela2['resul1'].update(f' {resultado}')
         if(resultadoP == None):
-            janela2['resul2'].update('Planta em fase de crescimento!')
+            janela2['resul2'].update(' Planta em fase de crescimento!' +
+                                     ' A irrigação será normal.')
         else:
             janela2['resul2'].update(f'{resultadoP}')
         janela1.hide()
 
+    # segunda condiçao de parada
     if window == janela2 and event == 'Finalizar' or event == sg.WIN_CLOSED:
         break
 
+# finalizaçao das janelas
 janela1.close()
 janela2.close()
