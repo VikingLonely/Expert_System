@@ -121,6 +121,13 @@ class InferenceEngine(KnowledgeEngine):
         global retornoP
         retornoP = ("Planta no estagio final - irrigar com metade do volume")
 
+    # Regra 15
+    @Rule(Fact(PlantaAcima6=False))
+    def estagioFinal2(self):
+        self.declare(Fact(IrrigacaoMetade=False))
+        global retornoP
+        retornoP = None
+
 
 engine = InferenceEngine()
 
