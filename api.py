@@ -93,15 +93,18 @@ def api_all():
     condClima = weather_data['weather'][0]['main']
     quantidade_sol_diaria = (pd.date_range(dt_start, dt_end, freq="1H").strftime('%H')).array.size
 
-    print(alturaMaior6)
-    print(umidadeSolo)
-    return jsonify(get_irrigation_status(
+    res = get_irrigation_status(
         temp,
         humidity,
         condClima,
         umidadeSolo,
         alturaMaior6,
-    ))
+    )
+
+    if (res):
+        res.append(quantidade_sol_diaria)
+
+    return jsonify(res)
 
 
 app.run()
